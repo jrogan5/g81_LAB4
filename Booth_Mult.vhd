@@ -19,8 +19,6 @@ architecture arch of Booth_Mult is
     signal A : std_logic_vector (7 downto 0);
     signal cond : std_logic_vector(1 downto 0);
     signal AQ : std_logic_vector(16 downto 0);
-    signal AQ_shifted : std_logic_vector(16 downto 0);
-    signal A_int: std_logic_vector (7 downto 0);
     signal i : integer := 0;
     signal step : integer := 0;
 
@@ -31,43 +29,43 @@ begin
             case step is
                 when 0 =>
                     if ready = '1' then
-                        M <= (In_1); -- converts M to 2's complement
+                        M <= (In_1); 
                         Q <= In_2 & '0';
                         A <= (others => '0'); -- Initialize A to 0
-                        A_int <= (others => '0');
                         step <= step + 1;
                         done <= '0';
-                        S <= (others => '0');
+                        S <= (15 downto 0 => '0');
                     end if;
                 when 1 =>
-                    cond <= Q(1 downto 0);
+                        cond <= Q(1 downto 0);
+                        step <= step + 1;
+                when 2 =>
                     case cond is
                         when "10" =>
-                            A <= std_logic_vector(signed(A_int) - signed(M)); -- this used to be unsigned but i think it should be signed
+                            A <= std_logic_vector(signed(A) - signed(M)); -- this used to be unsigned but i think it should be signed
                         when "01" =>
-                            A <= std_logic_vector(signed(A_int) + signed(M)); -- same here
+                            A <= std_logic_vector(signed(A) + signed(M)); -- same here
                         when others =>
                             null;
                     end case;
                     step <= step + 1;
-                when 2 =>
-                    AQ <= A & Q; -- shifting of AQ happens each time
-                    step <= step + 1;
                 when 3 =>
-                    AQ_shifted <= AQ(0) & AQ(16 downto 1); -- used to be '0' & AQ(16 downto 1)
+                    AQ <= std_logic_vector(shift_right(signed(A & Q),1)); -- shifting of AQ happens each time
                     step <= step + 1;
                 when 4 =>
-                    Q <= AQ_shifted(8 downto 0); -- split up A and Q
-                    A <= AQ_shifted(16 downto 9);
-                    A_int <= AQ_shifted(16 downto 9);
+                    Q <= AQ(8 downto 0); -- split up A and Q
+                    A <= AQ(16 downto 9);
                     i <= i + 1; -- increment i by 1
-                    if (i = 8) then
-                        step <= 0;
-                        done <= '1';
-                        S <= AQ_shifted(16 downto 1);
+                    if (i = 7) then
+                        step <= step + 1;
+                        i <= 0;
                     else
                         step <= 1;
                     end if;
+                when 5 =>
+                    step <= 0;
+                    done <= '1';  
+                    S <= A & Q(8 downto 1);
                 when others =>
                     null;
             end case;
