@@ -36,23 +36,20 @@ begin
                         done <= '0';
                         S <= (15 downto 0 => '0');
                     end if;
-                when 1 =>
-                        cond <= Q(1 downto 0);
-                        step <= step + 1;
-                when 2 =>
-                    case cond is
+                when 1 => 
+                    case Q(1 downto 0) is
                         when "10" =>
-                            A <= std_logic_vector(signed(A) - signed(M)); -- this used to be unsigned but i think it should be signed
+                            A <= std_logic_vector(signed(A) - signed(M));
                         when "01" =>
                             A <= std_logic_vector(signed(A) + signed(M)); -- same here
                         when others =>
                             null;
                     end case;
                     step <= step + 1;
-                when 3 =>
+                when 2 =>
                     AQ <= std_logic_vector(shift_right(signed(A & Q),1)); -- shifting of AQ happens each time
                     step <= step + 1;
-                when 4 =>
+                when 3 =>
                     Q <= AQ(8 downto 0); -- split up A and Q
                     A <= AQ(16 downto 9);
                     i <= i + 1; -- increment i by 1
@@ -62,7 +59,7 @@ begin
                     else
                         step <= 1;
                     end if;
-                when 5 =>
+                when 4 =>
                     step <= 0;
                     done <= '1';  
                     S <= A & Q(8 downto 1);

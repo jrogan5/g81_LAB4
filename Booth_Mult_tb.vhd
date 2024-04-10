@@ -31,7 +31,7 @@ begin
     clk_gen_proc: process
     begin
         wait for 10 ns;
-        while now < 5 us loop -- Simulate for 1000 ns
+        while now < 5 us loop -- Simulate for 5 us
             clk_tb <= not clk_tb; -- Toggle clock every half period
             wait for clk_period / 2;
         end loop;
@@ -41,7 +41,7 @@ begin
     -- Stimulus process
     stimulus: process
     begin
-        -- Test case 1: Expected out 00010101 (21)
+        -- Test case 1: Expected out 0000000000010101 (21)
         In_1_tb <= "00000111";  -- 7
         In_2_tb <= "00000011";  -- 3
         ready_tb <= '1';
@@ -50,24 +50,23 @@ begin
         wait until done_tb = '1';
         wait for 10 ns;
 
-        -- Test case 2: Expected out 00010101 (-21)
+        -- Test case 2: Expected out  (-21)
         In_1_tb <= "00000111";  -- 7
         In_2_tb <= "11111101";  -- -3
         ready_tb <= '1';
         wait until rising_edge(clk_tb);
         ready_tb <= '0'; -- algorithm begins
         wait until done_tb = '1'; -- signals S register is updated
-        wait for 10 ns;
+        wait for 10 ns; -- buffer zone 
 
-        -- Test case 3: Expected out 10010111 (-105)
+        -- Test case 3: Expected out 1111111110010111 (-105)
         In_1_tb <= "00100011";  -- 35
         In_2_tb <= "11111101";  -- -3
         ready_tb <= '1';
-        wait for 10 ns;
-        wait until rising_edge(clk_tb);
+        wait until rising_edge(clk_tb); -- algorithm begins
         ready_tb <= '0'; -- algorithm begins
         wait until done_tb = '1'; -- signals S register is updated
-        wait for 10 ns;
+        wait for 10 ns; -- buffer (not strictly needed)
 
         wait; -- until end
     end process stimulus;
