@@ -13,59 +13,99 @@ entity Booth_Mult is
 end Booth_Mult;
 
 architecture arch of Booth_Mult is
+-------------------------------------------------------------------------------
+--                               SIGNALS                                     --
+-------------------------------------------------------------------------------
+    -- register outputs
+    signal M_reg    : std_logic_vector (7 downto 0);
+    signal Q_reg    : std_logic_vector (8 downto 0);
+    signal A_reg    : std_logic_vector (7 downto 0);
 
-    signal M : std_logic_vector (7 downto 0);
-    signal Q : std_logic_vector (8 downto 0);
-    signal A : std_logic_vector (7 downto 0);
-    signal cond : std_logic_vector(1 downto 0);
-    signal AQ : std_logic_vector(16 downto 0);
-    signal i : integer := 0;
-    signal step : integer := 0;
+    -- adder/subtractor output
+    signal addend   : std_logic_vector (7 downto 0);
+    signal sum_out  : std_logic_vector (7 downto 0);
+    signal A_sum    : std_logic_vector (7 downto 0);
 
+    -- shifter output
+    signal AQ       : std_logic_vector(16 downto 0);
+
+    -- combinational logic outputs
+    signal Q_out    : std_logic_vector (8 downto 0);
+    signal A_out    : std_logic_vector (7 downto 0);
+
+    -- misc
+    signal cond     : std_logic_vector(1 downto 0);
+    signal sub_sel  : std_logic;
+    signal shift    : integer range 7 downto 0;
+-------------------------------------------------------------------------------
+------------------------------------------------------------------------------- 
+
+-------------------------------------------------------------------------------
+--                               COMPONENTS                                  --
+-------------------------------------------------------------------------------
+component addsub is -- adder / subtractor for mantissa addition step
+port(
+    A     : in     std_logic_vector (17 downto 0);
+    B     : in     std_logic_vector (17 downto 0);
+    sub   : in     std_logic;
+    sum   : out    std_logic_vector (18 downto 0)
+    );
+end component;
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+                
+    
 begin
+-------------------------------------------------------------------------------
+--                          INPUT REGISTER                                   --
+-------------------------------------------------------------------------------
     process(clk)
-    begin
+        begin
         if rising_edge(clk) then
-            case step is
-                when 0 =>
-                    if ready = '1' then
-                        M <= (In_1); 
-                        Q <= In_2 & '0';
-                        A <= (others => '0'); -- Initialize A to 0
-                        step <= step + 1;
-                        done <= '0';
-                        S <= (15 downto 0 => '0');
-                    end if;
-                when 1 => 
-                    case Q(1 downto 0) is
-                        when "10" =>
-                            A <= std_logic_vector(signed(A) - signed(M));
-                        when "01" =>
-                            A <= std_logic_vector(signed(A) + signed(M)); -- same here
-                        when others =>
-                            null;
-                    end case;
-                    step <= step + 1;
-                when 2 =>
-                    AQ <= std_logic_vector(shift_right(signed(A & Q),1)); -- shifting of AQ happens each time
-                    step <= step + 1;
-                when 3 =>
-                    Q <= AQ(8 downto 0); -- split up A and Q
-                    A <= AQ(16 downto 9);
-                    i <= i + 1; -- increment i by 1
-                    if (i = 7) then
-                        step <= step + 1;
-                        i <= 0;
-                    else
-                        step <= 1;
-                    end if;
-                when 4 =>
-                    step <= 0;
-                    done <= '1';  
-                    S <= A & Q(8 downto 1);
-                when others =>
-                    null;
-            end case;
+            if ready = '1' then
+                M_reg <= In_1; 
+                Q_reg <= In_2 & '0';
+                A_reg <= (others => '0'); -- Initialize A to 0
+            elsif shift = 7 then
+                done <= '1'; -- process is complete. Don't update registers.
+            else 
+                shift <= shift + 1; -- process incomplete. move onto nect phase
+                Q_reg <= Q_out; -- update registers (excluding M)
+                A_reg <= A_out;
+            end if;
         end if;
     end process;
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+--                          COMBINATIONAL LOGIC                              --
+-------------------------------------------------------------------------------
+    cond <= Q_reg(1 downto 0);
+
+    -- select whether to propogate A or A +/- M 
+    with cond select
+    addend <=   M_reg when "01",
+                M_reg when "10",
+                (others => '0') when others;
+
+    -- choose A + M or A - M            
+    with cond select
+    sub_sel <=  '1' when "10"
+                '0' when others;
+
+
+    addsub_mantissas : addsub
+    port map(A => A_reg, B => addend, sub => sub_sel, sum => sum_out); -- sum_frac includes the hidden bit. 
+
+    AQ <= shift_right(signed(A_sum & Q_reg), shift); -- shifting operation
+    
+    -- combinational logic outputs (register inputs)
+    A_out <= AQ(16 downto 9); 
+    Q_out <= AQ(8 downto 0);
+
+    -- multiplier result
+    S <= AQ(16 downto 1);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 end arch;

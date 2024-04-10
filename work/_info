@@ -9,26 +9,26 @@ z2
 !i10f 100
 cModel Technology
 dC:/Intel/modelsim_ase/bin/g81_LAB3
-Ebooth_mult
-Z0 w1712589405
+Eaddsub
+Z0 w1712775754
 Z1 DPx4 ieee 11 numeric_std 0 22 aU^R8eGcicLcUFIaBQSL>3
 Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
 Z3 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
-!i122 240
+!i122 268
 Z4 dC:/Intel/modelsim_ase/bin/g81_LAB4
-Z5 8C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult.vhd
-Z6 FC:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult.vhd
+Z5 8C:/Intel/modelsim_ase/bin/g81_LAB4/adder.vhd
+Z6 FC:/Intel/modelsim_ase/bin/g81_LAB4/adder.vhd
 l0
-L5 1
-V_NeC@2]OU[zV0>7f43gHV3
-!s100 LPGS3GXZdJW:o4nYBW3o43
+L13 1
+V9kfaWgdfeCQZX5U96LaSS0
+!s100 dWn76cChhDFX6FGbRb]a`1
 Z7 OV;C;2020.1;71
 32
-Z8 !s110 1712589446
+Z8 !s110 1712779114
 !i10b 1
-Z9 !s108 1712589446.000000
-Z10 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult.vhd|
-Z11 !s107 C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult.vhd|
+Z9 !s108 1712779114.000000
+Z10 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Intel/modelsim_ase/bin/g81_LAB4/adder.vhd|
+Z11 !s107 C:/Intel/modelsim_ase/bin/g81_LAB4/adder.vhd|
 !i113 1
 Z12 o-work work -2002 -explicit
 Z13 tExplicit 1 CvgOpt 0
@@ -36,12 +36,12 @@ Aarch
 R1
 R2
 R3
-DEx4 work 10 booth_mult 0 22 _NeC@2]OU[zV0>7f43gHV3
-!i122 240
-l25
-L15 60
-V>8oQ@?K<gC6V<_M1jJag@0
-!s100 RQeLWU_P5KYO@PY;fLENW2
+DEx4 work 6 addsub 0 22 9kfaWgdfeCQZX5U96LaSS0
+!i122 268
+l27
+L22 12
+V8=]z3@1`1PNRL<F8=`_1U2
+!s100 J]R5hKKH4CVPPY_FB4N]B0
 R7
 32
 R8
@@ -52,26 +52,71 @@ R11
 !i113 1
 R12
 R13
-Ebooth_mult_tb
-Z14 w1712589442
+Ebooth_mult
+Z14 w1712779104
 R1
 R2
 R3
-!i122 241
+!i122 269
 R4
-Z15 8C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult_tb.vhd
-Z16 FC:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult_tb.vhd
+8C:/Intel/modelsim_ase/bin/g81_LAB4/Booth_Mult.vhd
+FC:/Intel/modelsim_ase/bin/g81_LAB4/Booth_Mult.vhd
+l0
+L5 1
+V_NeC@2]OU[zV0>7f43gHV3
+!s100 LPGS3GXZdJW:o4nYBW3o43
+R7
+32
+Z15 !s110 1712779115
+!i10b 1
+R9
+!s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Intel/modelsim_ase/bin/g81_LAB4/Booth_Mult.vhd|
+!s107 C:/Intel/modelsim_ase/bin/g81_LAB4/Booth_Mult.vhd|
+!i113 1
+R12
+R13
+Aarch
+R1
+R2
+R3
+DEx4 work 10 booth_mult 0 22 _NeC@2]OU[zV0>7f43gHV3
+!i122 244
+l25
+L15 57
+Vo3V@8Y1l71R8f=ZO7k=fU0
+!s100 82Pg_;2NR=n:gZ[V9Pz5S3
+R7
+32
+!s110 1712778406
+!i10b 1
+!s108 1712778406.000000
+!s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult.vhd|
+!s107 C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult.vhd|
+!i113 1
+R12
+R13
+FC:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult.vhd
+8C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult.vhd
+Ebooth_mult_tb
+Z16 w1712778187
+R1
+R2
+R3
+!i122 270
+R4
+Z17 8C:/Intel/modelsim_ase/bin/g81_LAB4/Booth_Mult_tb.vhd
+Z18 FC:/Intel/modelsim_ase/bin/g81_LAB4/Booth_Mult_tb.vhd
 l0
 L5 1
 VPR9XEOOhA^i6VQ8eJChZ]2
 !s100 SN@R5kJ4CeMRVFYg^=Sz=2
 R7
 32
-R8
+R15
 !i10b 1
-R9
-Z17 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult_tb.vhd|
-Z18 !s107 C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/Booth_Mult_tb.vhd|
+Z19 !s108 1712779115.000000
+Z20 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Intel/modelsim_ase/bin/g81_LAB4/Booth_Mult_tb.vhd|
+Z21 !s107 C:/Intel/modelsim_ase/bin/g81_LAB4/Booth_Mult_tb.vhd|
 !i113 1
 R12
 R13
@@ -80,41 +125,41 @@ R1
 R2
 R3
 DEx4 work 13 booth_mult_tb 0 22 PR9XEOOhA^i6VQ8eJChZ]2
-!i122 241
+!i122 270
 l28
-L8 79
-V:KR[bGTbDe9VhB5NOcU6K1
-!s100 UT5NhF<[cFN_ZE[=U4BJ=0
+L8 78
+VXzH4SDRQ8^_7>hl=cO9GX3
+!s100 EeC9Yz^DaYTf_fo79b7Gg0
 R7
 32
-R8
+R15
 !i10b 1
-R9
-R17
-R18
+R19
+R20
+R21
 !i113 1
 R12
 R13
 Eled_decoder
-Z19 w1712582987
+Z22 w1712593188
 R1
 R2
 R3
-!i122 242
+!i122 271
 R4
-Z20 8C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/LED_decoder.vhd
-Z21 FC:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/LED_decoder.vhd
+Z23 8C:/Intel/modelsim_ase/bin/g81_LAB4/LED_decoder.vhd
+Z24 FC:/Intel/modelsim_ase/bin/g81_LAB4/LED_decoder.vhd
 l0
 L6 1
 Ve_2ENZh7n[La2TP]nh`l:0
 !s100 `o2RYaMbAJ[WjMh?`5z9C0
 R7
 32
-R8
+R15
 !i10b 1
-R9
-Z22 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/LED_decoder.vhd|
-Z23 !s107 C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/LED_decoder.vhd|
+R19
+Z25 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Intel/modelsim_ase/bin/g81_LAB4/LED_decoder.vhd|
+Z26 !s107 C:/Intel/modelsim_ase/bin/g81_LAB4/LED_decoder.vhd|
 !i113 1
 R12
 R13
@@ -123,41 +168,41 @@ R1
 R2
 R3
 DEx4 work 11 led_decoder 0 22 e_2ENZh7n[La2TP]nh`l:0
-!i122 242
+!i122 271
 l12
 L11 22
 V7oD2^GLoO77TUACR4PRmo1
 !s100 DNeRBlSNZPdAEK6:`GeRA0
 R7
 32
-R8
+R15
 !i10b 1
-R9
-R22
-R23
+R19
+R25
+R26
 !i113 1
 R12
 R13
 Ewrapper
-R19
+R22
 R1
 R2
 R3
-!i122 243
+!i122 272
 R4
-Z24 8C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/wrapper.vhd
-Z25 FC:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/wrapper.vhd
+Z27 8C:/Intel/modelsim_ase/bin/g81_LAB4/wrapper.vhd
+Z28 FC:/Intel/modelsim_ase/bin/g81_LAB4/wrapper.vhd
 l0
 L5 1
 VB;00>cB<BWM5;SUSg:PA_3
 !s100 hPiP9L1MMQ3hm>cREi@Td1
 R7
 32
-R8
+R15
 !i10b 1
-R9
-Z26 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/wrapper.vhd|
-Z27 !s107 C:/Intel/modelsim_ase/bin/g81_LAB4/g81_LAB4/wrapper.vhd|
+R19
+Z29 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Intel/modelsim_ase/bin/g81_LAB4/wrapper.vhd|
+Z30 !s107 C:/Intel/modelsim_ase/bin/g81_LAB4/wrapper.vhd|
 !i113 1
 R12
 R13
@@ -165,19 +210,19 @@ Aarch
 R1
 R2
 R3
-Z28 DEx4 work 7 wrapper 0 22 B;00>cB<BWM5;SUSg:PA_3
-!i122 243
+Z31 DEx4 work 7 wrapper 0 22 B;00>cB<BWM5;SUSg:PA_3
+!i122 272
 l41
-Z29 L19 59
-Z30 VM8MdFF^ZiL5IL=d5_6^i<0
-Z31 !s100 6d?bHNIcCa;^YKNQMcimi1
+Z32 L19 59
+Z33 VM8MdFF^ZiL5IL=d5_6^i<0
+Z34 !s100 6d?bHNIcCa;^YKNQMcimi1
 R7
 32
-R8
+R15
 !i10b 1
-R9
-R26
-R27
+R19
+R29
+R30
 !i113 1
 R12
 R13
