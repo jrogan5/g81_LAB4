@@ -20,16 +20,16 @@ entity addsub is
 end addsub ;
 
 architecture arch of addsub is
-    signal A_int : signed (8 downto 0) ; -- note signed addition / subtraction. 
-    signal B_int : signed (8 downto 0) ; -- this is to ensure consistent results no matter the relative sizes
+    signal A_int : signed (7 downto 0) ; -- note signed addition / subtraction. 
+    signal B_int : signed (7 downto 0) ; -- this is to ensure consistent results no matter the relative sizes
                                           -- of the two input operands (mantissas).
-    signal sum_int : signed (8 downto 0) ;
+    signal sum_int : signed (7 downto 0) ;
 begin
-    A_int <= signed('0' & A(7 downto 0)); -- extra '0' tacked on for overflow bit.
-    B_int <= signed('0' & B(7 downto 0));
+    A_int <= signed(A); 
+    B_int <= signed(B);
     sum_int <=  A_int - B_int when sub = '1'  -- note the abs() functin used here. 
                 else A_int + B_int;                  -- want only the magnitude of the sum/difference.
-    sum <= std_logic_vector(sum_int(8 downto 1));
+    sum <= std_logic_vector(sum_int(7 downto 0));
 end arch;
 -- end of addsub VHDL code
 -----------------------------------------------------------

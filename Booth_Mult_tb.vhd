@@ -48,8 +48,8 @@ begin
         wait until rising_edge(clk_tb);
         ready_tb <= '0'; -- load the M and Q registers with the inputs
         wait until done_tb = '1';
-        wait for 10 ns;
-
+        wait until rising_edge(clk_tb); -- a couple buffer periods
+        wait until rising_edge(clk_tb);
         -- Test case 2: Expected out  (-21)
         In_1_tb <= "00000111";  -- 7
         In_2_tb <= "11111101";  -- -3
@@ -57,8 +57,8 @@ begin
         wait until rising_edge(clk_tb);
         ready_tb <= '0'; -- algorithm begins
         wait until done_tb = '1'; -- signals S register is updated
-        wait for 10 ns; -- buffer zone 
-
+        wait until rising_edge(clk_tb); -- a couple buffer periods
+        wait until rising_edge(clk_tb);
         -- Test case 3: Expected out 1111111110010111 (-105)
         In_1_tb <= "00100011";  -- 35
         In_2_tb <= "11111101";  -- -3
@@ -66,8 +66,8 @@ begin
         wait until rising_edge(clk_tb); -- algorithm begins
         ready_tb <= '0'; -- algorithm begins
         wait until done_tb = '1'; -- signals S register is updated
-        wait for 10 ns; -- buffer (not strictly needed)
-
+        wait until rising_edge(clk_tb); -- a couple buffer periods
+        wait until rising_edge(clk_tb);
         wait; -- until end
     end process stimulus;
 

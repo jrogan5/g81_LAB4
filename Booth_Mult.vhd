@@ -24,7 +24,6 @@ architecture arch of Booth_Mult is
     -- adder/subtractor output
     signal addend   : std_logic_vector (7 downto 0);
     signal sum_out  : std_logic_vector (7 downto 0);
-    signal A_sum    : std_logic_vector (7 downto 0);
 
     -- shifter output
     signal AQ       : std_logic_vector(16 downto 0);
@@ -36,7 +35,7 @@ architecture arch of Booth_Mult is
     -- misc
     signal cond     : std_logic_vector(1 downto 0);
     signal sub_sel  : std_logic;
-    signal shift    : integer range 7 downto 0;
+    signal shift    : integer range 8 downto 1;
 -------------------------------------------------------------------------------
 ------------------------------------------------------------------------------- 
 
@@ -45,10 +44,10 @@ architecture arch of Booth_Mult is
 -------------------------------------------------------------------------------
 component addsub is -- adder / subtractor for mantissa addition step
 port(
-    A     : in     std_logic_vector (17 downto 0);
-    B     : in     std_logic_vector (17 downto 0);
+    A     : in     std_logic_vector (7 downto 0);
+    B     : in     std_logic_vector (7 downto 0);
     sub   : in     std_logic;
-    sum   : out    std_logic_vector (18 downto 0)
+    sum   : out    std_logic_vector (7 downto 0)
     );
 end component;
 -------------------------------------------------------------------------------
@@ -66,7 +65,9 @@ begin
                 M_reg <= In_1; 
                 Q_reg <= In_2 & '0';
                 A_reg <= (others => '0'); -- Initialize A to 0
-            elsif shift = 7 then
+                shift <= 1;
+                done <= '0';
+            elsif shift = 8 then
                 done <= '1'; -- process is complete. Don't update registers.
             else 
                 shift <= shift + 1; -- process incomplete. move onto nect phase
@@ -91,14 +92,14 @@ begin
 
     -- choose A + M or A - M            
     with cond select
-    sub_sel <=  '1' when "10"
+    sub_sel <=  '1' when "10",
                 '0' when others;
 
 
     addsub_mantissas : addsub
     port map(A => A_reg, B => addend, sub => sub_sel, sum => sum_out); -- sum_frac includes the hidden bit. 
 
-    AQ <= shift_right(signed(A_sum & Q_reg), shift); -- shifting operation
+    AQ <= std_logic_vector(shift_right(signed(sum_out & Q_reg),1)); -- shifting operation
     
     -- combinational logic outputs (register inputs)
     A_out <= AQ(16 downto 9); 
