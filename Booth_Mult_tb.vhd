@@ -41,22 +41,34 @@ begin
     -- Stimulus process
     stimulus: process
     begin
-        -- algoritthm:
-        -- 1st clock: ready step. loads them in.
-        -- 2nd:
-        In_1_tb <= "11111001";  -- -7
+        -- Test case 1: Expected out 0000000000010101 (21)
+        In_1_tb <= "00000111";  -- 7
+        In_2_tb <= "00000011";  -- 3
+        ready_tb <= '1';
+        wait until rising_edge(clk_tb);
+        ready_tb <= '0'; -- load the M and Q registers with the inputs
+        wait until done_tb = '1';
+        wait for 10 ns;
+
+        -- Test case 2: Expected out  (-21)
+        In_1_tb <= "00000111";  -- 7
         In_2_tb <= "11111101";  -- -3
         ready_tb <= '1';
         wait until rising_edge(clk_tb);
-        ready_tb <= '0'; -- Start the multiplication process
+        ready_tb <= '0'; -- algorithm begins
+        wait until done_tb = '1'; -- signals S register is updated
+        wait for 10 ns; -- buffer zone 
 
-        -- Wait for 'done' signal
-        wait until done_tb = '1';
+        -- Test case 3: Expected out 1111111110010111 (-105)
+        In_1_tb <= "00100011";  -- 35
+        In_2_tb <= "11111101";  -- -3
+        ready_tb <= '1';
+        wait until rising_edge(clk_tb); -- algorithm begins
+        ready_tb <= '0'; -- algorithm begins
+        wait until done_tb = '1'; -- signals S register is updated
+        wait for 10 ns; -- buffer (not strictly needed)
 
-        -- Add any additional checks or assertions here
-
-        -- End simulation
-        wait;
+        wait; -- until end
     end process stimulus;
 
     -- Instantiate the DUT
