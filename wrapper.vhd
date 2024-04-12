@@ -14,7 +14,7 @@
 --      3. Map the ready signal to `PIN_AE12` (SW[9])
 --      4. Map ready_LED to `PIN_Y21` (LED9)
 --      6. Map done to `PIN_V16` (LED0)
---      5. Map the buttons as before
+--      5. Map the buttons as before 
 --      6. Map the wrapper segments to the on-board segments 
 --          (with the same number instead of flipping them, 
 --          I fixed that in software)

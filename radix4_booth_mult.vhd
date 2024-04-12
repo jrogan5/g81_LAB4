@@ -21,13 +21,21 @@ architecture arch of Radix4_Booth_Mult is
     signal Q_reg    : std_logic_vector (8 downto 0);
     signal A_reg    : std_logic_vector (7 downto 0);
 
+    -- new signals for bonus to handle extra internal bits
+    signal A_signed : signed (7 downto 0);
+    signal M_signed : signed (7 downto 0);
+    signal A_int    : std_logic_vector (9 downto 0);
+    signal M_int    : std_logic_vector (9 downto 0);
+    signal M2_int   : signed (9 downto 0);
+
     -- adder/subtractor output
-    signal addend   : std_logic_vector (7 downto 0);
-    signal sum_out  : std_logic_vector (7 downto 0);
+    signal addend   : std_logic_vector (9 downto 0);
+    signal sum_out  : std_logic_vector (9 downto 0);
 
     -- shifter output
-    signal AQ       : std_logic_vector(16 downto 0);
-
+    signal AQ_signed    : signed (18 downto 0); -- 10 + 9 bits
+    signal A_out_signed : signed (9 downto 0); -- 10 bits
+    
     -- combinational logic outputs
     signal Q_out    : std_logic_vector (8 downto 0);
     signal A_out    : std_logic_vector (7 downto 0);
@@ -43,11 +51,12 @@ architecture arch of Radix4_Booth_Mult is
 --                               COMPONENTS                                  --
 -------------------------------------------------------------------------------
 component addsub is -- adder / subtractor for mantissa addition step
+generic(bits : integer range 10 downto 8);
 port(
-    A     : in     std_logic_vector (7 downto 0);
-    B     : in     std_logic_vector (7 downto 0);
+    A     : in     std_logic_vector (bits-1 downto 0);
+    B     : in     std_logic_vector (bits-1 downto 0);
     sub   : in     std_logic;
-    sum   : out    std_logic_vector (7 downto 0)
+    sum   : out    std_logic_vector (bits-1 downto 0)
     );
 end component;
 -------------------------------------------------------------------------------
@@ -82,36 +91,52 @@ begin
 -------------------------------------------------------------------------------
 --                          COMBINATIONAL LOGIC                              --
 -------------------------------------------------------------------------------
-   cond <= Q_reg(2 downto 0);  -- Extracting the last three bits of Q_reg
+    cond <= Q_reg(2 downto 0);  -- Extracting the last three bits of Q_reg
+    A_signed <= signed(A_reg); -- signed cast
+    M_signed <= signed(M_reg); -- signed cast.
+
+    -- Because of the multiplication by 2, 
+    -- we must consider 8 + 2 = s10 bits for internal signals. 
+    A_int <= std_logic_vector(resize(A_signed, 10));
+    M_int <= std_logic_vector(resize(M_signed, 10));
+
+    -- multiplication by 2, for input to the mux that follows
+    M2_int <= shift_left(signed(M_int),1);
 
     -- Select A or A +/- M or A +/- 2M based last three bits of Q_reg
     with cond select
-    addend <=   M_reg when "001",                     -- M
-                M_reg when "010",                     -- M
-                std_logic_vector(shift_left(signed(M_reg),1)) when "011",   -- 2M
-                std_logic_vector(shift_left(signed(M_reg),1)) when "100",   -- 2M
-                M_reg when "101",                     -- M
-                M_reg when "110",                     -- M
-                (others => '0') when others;          -- 0
+    addend <=   M_int when "001",                      -- M
+                M_int when "010",                      -- M
+                std_logic_vector(M2_int) when "011",   -- 2M
+                std_logic_vector(M2_int) when "100",   -- 2M
+                M_int when "101",                      -- M
+                M_int when "110",                      -- M
+                (others => '0') when others;           -- 0
 
 
-    -- Choose A + M or A - M based on the conditions derived from the last three bits of Q_reg
+    -- Choose (A + addend) or (A - addend) based on the conditions derived from the last three bits of Q_reg
     with cond select
       sub_sel <=    '1' when "100",  -- subtraction 
-                    '1' when "110",  -- ^^
                     '1' when "101",  -- ^^
-                    '0' when others; -- addition
-    addsub_mantissas : addsub
-    port map(A => A_reg, B => addend, sub => sub_sel, sum => sum_out);  
-
-    AQ <= std_logic_vector(shift_right(signed(sum_out & Q_reg), 2)); 
+                    '1' when "110",  -- ^^
+                    '0' when others; -- addition (possibly of zero)
+    addsub_unit : addsub
+    generic map(bits => 10)
+    port map(A => A_int, B => addend, sub => sub_sel, sum => sum_out);  
     
-    -- combinational logic outputs (register inputs)
-    A_out <= AQ(16 downto 9); 
-    Q_out <= AQ(8 downto 0);
+
+    -- shift right 2 places, dividing by 4. 
+    AQ_signed <= shift_right(signed(sum_out & Q_reg), 2); 
+
+    -- break out the first part, which is signed A 
+    A_out_signed <= AQ_signed(18 downto 9); -- 10 bits
+
+    -- resize and convert types of A and Q for output of COMB
+    A_out <= std_logic_vector(resize(A_out_signed, 8)); -- 8 bits
+    Q_out <= std_logic_vector(AQ_signed(8 downto 0));   -- 9 bits
 
     -- multiplier result
-    S <= AQ(16 downto 1);
+    S <= A_out & Q_out(8 downto 1);
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 end arch;

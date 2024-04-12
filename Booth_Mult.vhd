@@ -45,11 +45,12 @@ architecture arch of Booth_Mult is
 --                               COMPONENTS                                  --
 -------------------------------------------------------------------------------
 component addsub is -- adder / subtractor for mantissa addition step
+generic(bits : integer range 10 downto 8);
 port(
-    A     : in     std_logic_vector (7 downto 0);
-    B     : in     std_logic_vector (7 downto 0);
+    A     : in     std_logic_vector (bits-1 downto 0);
+    B     : in     std_logic_vector (bits-1 downto 0);
     sub   : in     std_logic;
-    sum   : out    std_logic_vector (7 downto 0)
+    sum   : out    std_logic_vector (bits-1 downto 0)
     );
 end component;
 -------------------------------------------------------------------------------
@@ -98,7 +99,8 @@ begin
                 '0' when others;
 
 
-    addsub_mantissas : addsub
+    addsub_unit : addsub
+    generic map (bits => 8)
     port map(A => A_reg, B => addend, sub => sub_sel, sum => sum_out); -- sum_frac includes the hidden bit. 
 
     AQ <= std_logic_vector(shift_right(signed(sum_out & Q_reg),1)); -- shifting operation

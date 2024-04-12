@@ -41,33 +41,36 @@ begin
     -- Stimulus process
     stimulus: process
     begin
-        -- Test case 1: Expected out 0000000000010101 (21)
+        -- Test case 1: Expected out 0000000000010101 (21) PASSED
         In_1_tb <= "00000111";  -- 7
         In_2_tb <= "00000011";  -- 3
         ready_tb <= '1';
         wait until rising_edge(clk_tb);
         ready_tb <= '0'; -- load the M and Q registers with the inputs
-        wait until done_tb = '1';
-        wait until rising_edge(clk_tb); -- a couple buffer periods
-        wait until rising_edge(clk_tb);
-        -- Test case 2: Expected out  (-21)
+        wait until done_tb = '1'; 
+        -- Test case 2: Expected out 1111111111101011 (-21) PASSED
         In_1_tb <= "00000111";  -- 7
         In_2_tb <= "11111101";  -- -3
         ready_tb <= '1';
         wait until rising_edge(clk_tb);
         ready_tb <= '0'; -- algorithm begins
         wait until done_tb = '1'; -- signals S register is updated
-        wait until rising_edge(clk_tb); -- a couple buffer periods
-        wait until rising_edge(clk_tb);
-        -- Test case 3: Expected out 1111111110010111 (-105)
+
+        -- Test case 3: Expected out 1111111110010111 (-105) PASSED
         In_1_tb <= "00100011";  -- 35
         In_2_tb <= "11111101";  -- -3
         ready_tb <= '1';
         wait until rising_edge(clk_tb); -- algorithm begins
         ready_tb <= '0'; -- algorithm begins
         wait until done_tb = '1'; -- signals S register is updated
-        wait until rising_edge(clk_tb); -- a couple buffer periods
-        wait until rising_edge(clk_tb);
+        
+        -- Test case 4: Expected out 1100000010000000 (-16 256)
+        In_2_tb <= "01111111";  --  127
+        In_1_tb <= "10000000";  -- -128
+        ready_tb <= '1';
+        wait until rising_edge(clk_tb); -- algorithm begins
+        ready_tb <= '0'; -- algorithm begins
+        wait until done_tb = '1'; -- signals S register is updated
         wait; -- until end
     end process stimulus;
 
