@@ -68,10 +68,10 @@ begin
     mult : Booth_Mult port map( In_1 => in1, In_2 => in2, S => mult_out, clk => clk, ready => ready, done => done );
 
     -- LED decoders instantiation
-    s0 : LED_decoder port map( code => mult_out(15 downto 12), segments_out => segment0 );
-    s1 : LED_decoder port map( code => mult_out(11 downto 8), segments_out => segment1 );
-    s2 : LED_decoder port map( code => mult_out(7 downto 4), segments_out => segment2 );    
-    s3 : LED_decoder port map( code => mult_out(3 downto 0), segments_out => segment3 );
+    s0 : LED_decoder port map( code => mult_out(3 downto 0), segments_out => segment0 );
+    s1 : LED_decoder port map( code => mult_out(7 downto 4), segments_out => segment1 );
+    s2 : LED_decoder port map( code => mult_out(11 downto 8), segments_out => segment2 );    
+    s3 : LED_decoder port map( code => mult_out(15 downto 12), segments_out => segment3 );
     s4 : LED_decoder port map( code => mult_out(15 downto 12), segments_out => segment4 );
     s5 : LED_decoder port map( code => mult_out(11 downto 8), segments_out => segment5 );
 end arch;
