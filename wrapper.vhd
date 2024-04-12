@@ -110,13 +110,6 @@ begin
         mult_out(3 downto 0)  when others;
 
 
-    process (ready, B1, input_operand)
-    begin
-        if ready = '1' and not B1 = '1' then
-            in2 <= input_operand;
-        end if;
-    end process;
-
     -- Booth multiplier instantiation
     mult : Booth_Mult port map( In_1 => in1, In_2 => in2, S => mult_out, clk => clk, ready => ready, done => done );
 

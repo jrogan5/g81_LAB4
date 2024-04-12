@@ -28,14 +28,16 @@ architecture arch of Booth_Mult is
     -- shifter output
     signal AQ       : std_logic_vector(16 downto 0);
 
-    -- combinational logic outputs
-    signal Q_out    : std_logic_vector (8 downto 0);
-    signal A_out    : std_logic_vector (7 downto 0);
-
     -- misc
     signal cond     : std_logic_vector(1 downto 0);
     signal sub_sel  : std_logic;
     signal shift    : integer range 8 downto 1;
+
+    -- combinational logic outputs
+    signal Q_out    : std_logic_vector (8 downto 0);
+    signal A_out    : std_logic_vector (7 downto 0);
+
+
 -------------------------------------------------------------------------------
 ------------------------------------------------------------------------------- 
 
@@ -67,9 +69,9 @@ begin
                 A_reg <= (others => '0'); -- Initialize A to 0
                 shift <= 1;
                 done <= '0';
-            elsif shift = 8 then
+            elsif shift = 8 then --ready is zero
                 done <= '1'; -- process is complete. Don't update registers.
-            else 
+            else -- ready is zero
                 shift <= shift + 1; -- process incomplete. move onto nect phase
                 Q_reg <= Q_out; -- update registers (excluding M)
                 A_reg <= A_out;
