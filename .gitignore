@@ -1,0 +1,8 @@
+# Ignore everything
+*
+
+# not .vhd files
+!*.vhd
+
+# also not the readme
+!*.md
