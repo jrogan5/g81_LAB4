@@ -59,8 +59,9 @@ architecture arch of wrapper is
     end component;
 
 begin
-    -- turn on the ready LED when 
-    ready_LED <= '1' when 
+    -- turn on the ready LED when ready is 1
+    ready_LED <= '1' when ready = '1' else '0'; -- if the opposite behavior occurs, 
+                                                -- LED pin might be active low or something.
     -- load input 1 from switch bank
     process (B0)
     begin
