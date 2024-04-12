@@ -1,8 +1,5 @@
-# Ignore everything
-*
+* 
 
-# not .vhd files
+# exceptions to igore:
 !*.vhd
-
-# also not the readme
 !*.md
