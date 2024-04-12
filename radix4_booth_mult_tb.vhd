@@ -64,7 +64,7 @@ begin
         ready_tb <= '0'; -- algorithm begins
         wait until done_tb = '1'; -- signals S register is updated
         
-        -- Test case 4: Expected out 0000000011100110 (230) FAILED
+        -- Test case 4: Expected out 0000100011111100 (2300) PASSED
         In_1_tb <= "01110011";  -- 115
         In_2_tb <= "00010100";  -- 20
         ready_tb <= '1';
