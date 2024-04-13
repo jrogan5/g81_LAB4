@@ -24,21 +24,21 @@ architecture arch of Radix4_Booth_Mult is
     -- new signals for bonus to handle extra internal bits
     signal A_signed : signed (7 downto 0);
     signal M_signed : signed (7 downto 0);
-    signal A_int    : std_logic_vector (9 downto 0);
-    signal M_int    : std_logic_vector (9 downto 0);
-    signal M2_int   : signed (9 downto 0);
+    signal A_int    : std_logic_vector (8 downto 0); -- internal signals...
+    signal M_int    : std_logic_vector (8 downto 0); -- ...sized for asl 1.  
+    signal M2_int   : signed (8 downto 0);
 
     -- adder/subtractor output
-    signal addend   : std_logic_vector (9 downto 0);
-    signal sum_out  : std_logic_vector (9 downto 0);
+    signal addend   : std_logic_vector (8 downto 0);
+    signal sum_out  : std_logic_vector (8 downto 0); 
 
     -- shifter output
-    signal AQ_signed    : signed (18 downto 0); -- 10 + 9 bits
-    signal A_out_signed : signed (9 downto 0); -- 10 bits
-    
+    signal AQ_signed    : signed (17 downto 0); -- 9 + 9 = 18 bits
+    signal A_out_signed : signed (8 downto 0); -- 9 bits
+
     -- combinational logic outputs
-    signal Q_out    : std_logic_vector (8 downto 0);
-    signal A_out    : std_logic_vector (7 downto 0);
+    signal Q_out    : std_logic_vector (8 downto 0); -- 9 bits
+    signal A_out    : std_logic_vector (7 downto 0); -- 8 bits (after resized)
 
     -- misc
     signal cond     : std_logic_vector(2 downto 0);
@@ -51,7 +51,7 @@ architecture arch of Radix4_Booth_Mult is
 --                               COMPONENTS                                  --
 -------------------------------------------------------------------------------
 component addsub is -- adder / subtractor for mantissa addition step
-generic(bits : integer range 10 downto 8);
+generic(bits : integer range 9 downto 8);
 port(
     A     : in     std_logic_vector (bits-1 downto 0);
     B     : in     std_logic_vector (bits-1 downto 0);
@@ -70,15 +70,15 @@ begin
     process(clk)
         begin
         if rising_edge(clk) then
-            if ready = '1' then
+            if ready = '1' then -- State: idle / first step on algoritm
                 M_reg <= In_1; 
                 Q_reg <= In_2 & '0';
                 A_reg <= (others => '0'); -- Initialize A to 0
                 shift <= 1;
                 done <= '0';
-            elsif shift = 4 then  
+            elsif shift = 4 then  -- State: finished
                 done <= '1'; -- process is complete. Don't update registers.
-            else 
+            else  -- state: running
                 shift <= shift + 1; -- process not complete so move to next phase
                 Q_reg <= Q_out; -- update required registers 
                 A_reg <= A_out; -- update required registers 
@@ -96,9 +96,9 @@ begin
     M_signed <= signed(M_reg); -- signed cast.
 
     -- Because of the multiplication by 2, 
-    -- we must consider 8 + 2 = s10 bits for internal signals. 
-    A_int <= std_logic_vector(resize(A_signed, 10));
-    M_int <= std_logic_vector(resize(M_signed, 10));
+    -- we must consider 8 + 1 = 9 bits for internal signals. 
+    A_int <= std_logic_vector(resize(A_signed, 9));
+    M_int <= std_logic_vector(resize(M_signed, 9));
 
     -- multiplication by 2, for input to the mux that follows
     M2_int <= shift_left(signed(M_int),1);
@@ -114,14 +114,15 @@ begin
                 (others => '0') when others;           -- 0
 
 
-    -- Choose (A + addend) or (A - addend) based on the conditions derived from the last three bits of Q_reg
+    -- Choose (A + addend) or (A - addend) based on the condition
+    -- defined by the last three bits of Q_reg
     with cond select
       sub_sel <=    '1' when "100",  -- subtraction 
                     '1' when "101",  -- ^^
                     '1' when "110",  -- ^^
                     '0' when others; -- addition (possibly of zero)
     addsub_unit : addsub
-    generic map(bits => 10)
+    generic map(bits => 9)
     port map(A => A_int, B => addend, sub => sub_sel, sum => sum_out);  
     
 
@@ -129,7 +130,7 @@ begin
     AQ_signed <= shift_right(signed(sum_out & Q_reg), 2); 
 
     -- break out the first part, which is signed A 
-    A_out_signed <= AQ_signed(18 downto 9); -- 10 bits
+    A_out_signed <= AQ_signed(17 downto 9); -- 9 bits
 
     -- resize and convert types of A and Q for output of COMB
     A_out <= std_logic_vector(resize(A_out_signed, 8)); -- 8 bits
