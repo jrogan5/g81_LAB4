@@ -3,7 +3,7 @@
 
 -- James Rogan      261157151
 -- Hamza Abudaqa    261175969
--- Date Modified:   2024-04-12
+-- Date Modified:   2024-04-13
 
 -- INSTRUCTIONS FOR USE:
 --  Compile in quartus with the top level set to `wrapper_rad4.vhd`
