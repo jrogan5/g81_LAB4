@@ -98,15 +98,15 @@ begin
 
     with cond select
     dig1 <=
-        in2(7 downto 4) when "01",
-        in1(7 downto 4) when "10",
+        in1(7 downto 4) when "01",
+        in2(7 downto 4) when "10",
         mult_out(7 downto 4) when others;
 
         
     with cond select
     dig0 <=
-        in2(3 downto 0) when "01",
-        in1(3 downto 0) when "10",
+        in1(3 downto 0) when "01",
+        in2(3 downto 0) when "10",
         mult_out(3 downto 0)  when others;
 
 
