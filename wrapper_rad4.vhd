@@ -59,56 +59,56 @@ architecture arch of wrapper_rad4 is
     end component;
 
 begin
-    -- turn on the ready LED when ready is 1
-    ready_LED <= '1' when ready = '1' else '0'; -- if the opposite behavior occurs, 
-                                                -- LED pin might be active low or something.
-    -- load input 1 from switch bank
-    process (B0)
     begin
-        if ready = '1' then
-            if not B0 = '1' then
-                in1 <= input_operand;
+        -- turn on the ready LED when ready is 1
+        ready_LED <= '1' when ready = '1' else '0'; -- if the opposite behavior occurs, 
+                                                    -- LED pin might be active low or something.
+        -- load input 1 from switch bank
+        process (B0)
+        begin
+            if ready = '1' then
+                if not B0 = '1' then
+                    in1 <= input_operand;
+                end if;
             end if;
-        end if;
-    end process;
-
-    -- load input 2 from switch bank
-    process (B1)
-    begin
-        if ready = '1' then
-            if not B1 = '1' then
-                in2 <= input_operand;
+        end process;
+    
+        -- load input 2 from switch bank
+        process (B1)
+        begin
+            if ready = '1' then
+                if not B1 = '1' then
+                    in2 <= input_operand;
+                end if;
             end if;
-        end if;
-    end process;
-
-    cond <= B2 & B3;
-
-    with cond select
-    dig3 <=
-        "0000" when "01",
-        "0000" when "10",
-        mult_out(15 downto 12) when others;
-
-    with cond select
-    dig2 <=
-        "0000" when "01",
-        "0000" when "10",
-        mult_out(11 downto 8) when others;
-
-    with cond select
-    dig1 <=
-        in1(7 downto 4) when "01",
-        in2(7 downto 4) when "10",
-        mult_out(7 downto 4) when others;
-
-        
-    with cond select
-    dig0 <=
-        in1(3 downto 0) when "01",
-        in1(3 downto 0) when "10",
-        mult_out(3 downto 0)  when others;
-
+        end process;
+    
+        cond <= B2 & B3;
+    
+        with cond select
+        dig3 <=
+            "0000" when "01",
+            "0000" when "10",
+            mult_out(15 downto 12) when others;
+    
+        with cond select
+        dig2 <=
+            "0000" when "01",
+            "0000" when "10",
+            mult_out(11 downto 8) when others;
+    
+        with cond select
+        dig1 <=
+            in1(7 downto 4) when "01",
+            in2(7 downto 4) when "10",
+            mult_out(7 downto 4) when others;
+    
+            
+        with cond select
+        dig0 <=
+            in1(3 downto 0) when "01",
+            in2(3 downto 0) when "10",
+            mult_out(3 downto 0)  when others;    
 
     -- Booth multiplier instantiation
     mult : Radix4_Booth_Mult port map( In_1 => in1, In_2 => in2, S => mult_out, clk => clk, ready => ready, done => done );
